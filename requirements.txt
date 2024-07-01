@@ -6,7 +6,7 @@
     - Users must be able to reset their passwords.
 
 2. **Responsive Design**
-    - The app must be fully responsive and functional on various devices (desktop, tablet, and mobile).
+    - The app must be fully responsive and functional on desktop.
 
 ## Data Input
 3. **CSV File Upload**
