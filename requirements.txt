@@ -1,55 +1,8 @@
-# Testable Requirements for Dashboard Web App
-
-## General Requirements
-1. **User Authentication**
-    - The app must have a user login and registration system.
-    - Users must be able to reset their passwords.
-
-2. **Responsive Design**
-    - The app must be fully responsive and functional on desktop.
-
-## Data Input
-3. **CSV File Upload**
-    - Users must be able to upload CSV files.
-    - The app must validate the format of the uploaded CSV files.
-    - The app must handle and report errors in file uploads gracefully.
-
-## Data Visualization
-4. **Coverage Visualization**
-    - The app must display coverage data on a map.
-    - Users must be able to zoom in/out and pan on the map.
-
-5. **Quality Visualization**
-    - The app must display quality metrics (e.g., signal strength, drop rate) in graphical form (e.g., line charts, bar charts).
-    - Users must be able to filter data by date range.
-
-6. **KPI Comparison**
-    - The app must allow users to compare KPIs across different months.
-    - Comparison charts must be interactive, allowing users to highlight and isolate specific data points.
-
-## Performance
-7. **Load Time**
-    - The app must load within 3 seconds on a standard internet connection.
-    - Visualizations must render within 2 seconds after data is loaded.
-
-8. **Scalability**
-    - The app must handle up to 100 concurrent users without performance degradation.
-
-## Usability
-9. **User Interface**
-    - The app must have an intuitive and easy-to-navigate user interface.
-    - Users must be able to access help documentation or support within the app.
-
-## Security
-10. **Data Security**
-    - The app must encrypt user data both in transit and at rest.
-    - User sessions must expire after a period of inactivity (e.g., 15 minutes).
-
-## Testing
-11. **Unit Tests**
-    - The app must have unit tests covering at least 80% of the codebase.
-    - All unit tests must pass before deployment.
-
-12. **Integration Tests**
-    - The app must have integration tests for critical workflows (e.g., file upload, data visualization).
-    - Integration tests must pass before deployment.
+Flask==2.3.2
+Flask-SQLAlchemy==3.0.4
+Flask-Login==0.6.2
+Flask-WTF==1.1.1
+WTForms==3.0.1
+Werkzeug==2.3.4
+plotly==5.15.0
+gunicorn==20.1.0
