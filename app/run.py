@@ -10,19 +10,33 @@ app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Needed for session management
 app.permanent_session_lifetime = timedelta(days=5)
 
-@app.route("/", methods=["POST", "GET"])
+def get_db_connection():
+    conn = sqlite3.connect('users.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+@app.route("/", methods=["GET"])
+def index():
+    if "user" in session:
+        return redirect(url_for("home"))
+    return render_template("login.html")
+
+
+@app.route("/login", methods=["POST"])
 def login():
-    if request.method == "POST":
-        session.permanent = True
-        user = request.form["nm"]
-        session["user"] = user
-        flash("Login successful !!")
+    email = request.form['email']
+    password = request.form['password']
+
+    conn = get_db_connection()
+    user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+    conn.close()
+
+    if user and check_password_hash(user['password'], password):
+        session['user'] = email
+        flash('Login successful!')
         return redirect(url_for("home"))
     else:
-        if "user" in session:
-            flash("Already logged in")
-            return redirect(url_for("home"))
-        return render_template("login.html")
+        flash('Invalid email or password.')
+        return redirect(url_for("index"))
 
 @app.route("/home", methods=["POST", "GET"])
 def home():

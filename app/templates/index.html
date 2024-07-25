@@ -18,6 +18,9 @@
             padding: 0;
         }
         .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Space between sections */
             margin-top: 20px;
             padding: 20px;
             background: #fff;
@@ -25,7 +28,6 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .header {
-            margin-bottom: 20px;
             text-align: center;
         }
         .header h1 {
@@ -41,11 +43,12 @@
             margin-bottom: 30px;
         }
         .chart-container {
-            margin-bottom: 40px;
-            padding: 10px; /* Added padding */
-            border: 1px solid #ddd; /* Optional border for better distinction */
-            border-radius: 8px; /* Rounded corners */
-            background-color: #f9f9f9; /* Light background color */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px; /* Space between charts */
+            overflow: hidden; /* Hide any excess content */
         }
         .chart-container h2 {
             font-size: 1.5rem;
@@ -66,12 +69,28 @@
             }
         }
         .plot-container {
-            width: 100%;
-            height: 100%;
+            width: 100%; /* Ensures plot takes full width of container */
+            height: 400px; /* Set a fixed height for consistency */
+            overflow: hidden; /* Hide any overflow */
         }
         .plot-container .plotly-graph-div {
+            width: 100% !important; /* Ensures Plotly graph takes full width */
+            height: 100% !important; /* Ensures Plotly graph takes full height */
             max-width: 100%;
             max-height: 100%;
+            overflow: hidden; /* Hide overflow inside plotly graph */
+        }
+        /* Flexbox styles for visualization layout */
+        .visualization-row {
+            display: flex;
+            justify-content: space-between; /* Push columns to the edges */
+            gap: 20px; /* Space between columns */
+        }
+        .visualization-column {
+            flex: 1;
+            min-width: 0; /* Allows flex items to shrink below their content size */
+            max-width: calc(50% - 10px); /* Adjusts the width to account for gaps */
+            overflow: hidden; /* Hide any overflow */
         }
     </style>
 </head>
@@ -95,10 +114,10 @@
             </form>
         </div>
 
-        <!-- Grid for side-by-side comparison -->
-        <div class="row">
+        <!-- Flexbox Container for Side-by-Side Visualizations -->
+        <div class="visualization-row">
             <!-- File 1 Visualizations -->
-            <div class="col-md-6">
+            <div class="visualization-column">
                 <div class="chart-container">
                     <h2>Network Coverage and Throughput - File 1</h2>
                     <div id="map1" class="plot-container">{{ map_html1|safe }}</div>
@@ -114,7 +133,7 @@
             </div>
 
             <!-- File 2 Visualizations -->
-            <div class="col-md-6">
+            <div class="visualization-column">
                 <div class="chart-container">
                     <h2>Network Coverage and Throughput - File 2</h2>
                     <div id="map2" class="plot-container">{{ map_html2|safe }}</div>
