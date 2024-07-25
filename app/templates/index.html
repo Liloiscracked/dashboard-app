@@ -49,6 +49,8 @@
             background-color: #f9f9f9;
             margin-bottom: 20px; /* Space between charts */
             overflow: hidden; /* Hide any excess content */
+            height: 500px; /* Set a fixed height for the container */
+            position: relative;
         }
         .chart-container h2 {
             font-size: 1.5rem;
@@ -70,8 +72,8 @@
         }
         .plot-container {
             width: 100%; /* Ensures plot takes full width of container */
-            height: 400px; /* Set a fixed height for consistency */
-            overflow: hidden; /* Hide any overflow */
+            height: 100%; /* Ensures plot takes full height of container */
+            overflow: auto; /* Enable scrolling */
         }
         .plot-container .plotly-graph-div {
             width: 100% !important; /* Ensures Plotly graph takes full width */
