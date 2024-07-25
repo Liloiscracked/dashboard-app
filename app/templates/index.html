@@ -42,6 +42,10 @@
         }
         .chart-container {
             margin-bottom: 40px;
+            padding: 10px; /* Added padding */
+            border: 1px solid #ddd; /* Optional border for better distinction */
+            border-radius: 8px; /* Rounded corners */
+            background-color: #f9f9f9; /* Light background color */
         }
         .chart-container h2 {
             font-size: 1.5rem;
@@ -75,42 +79,57 @@
     <div class="container">
         <div class="header">
             <h1>Network Performance Dashboard</h1>
-            <p>Visualize network coverage, throughput, and signal strength trends.</p>
+            <p>Visualize network coverage, throughput, and signal strength trends for two files.</p>
         </div>
         <div class="filter">
-            <form method="GET" action="/">
+            <form method="POST" action="{{ url_for('home') }}" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="cluster">Select Cluster:</label>
-                    <select id="cluster" name="cluster" class="form-control">
-                        <option value="">All Clusters</option>
-                        {% for cluster in clusters %}
-                            <option value="{{ cluster }}" {% if cluster|string == request.args.get('cluster') %}selected{% endif %}>{{ cluster }}</option>
-                        {% endfor %}
-                    </select>
+                    <label for="file1">Select the first CSV file:</label>
+                    <input type="file" id="file1" name="file1" class="form-control" accept=".csv" required>
                 </div>
                 <div class="form-group">
-                    <label for="start_date">Start Date:</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control" value="{{ start_date }}">
+                    <label for="file2">Select the second CSV file:</label>
+                    <input type="file" id="file2" name="file2" class="form-control" accept=".csv" required>
                 </div>
-                <div class="form-group">
-                    <label for="end_date">End Date:</label>
-                    <input type="date" id="end_date" name="end_date" class="form-control" value="{{ end_date }}">
-                </div>
-                <button type="submit" class="btn btn-primary">Filter</button>
+                <button type="submit" class="btn btn-primary">Upload and Compare</button>
             </form>
         </div>
-        <div class="chart-container">
-            <h2>Network Coverage and Throughput</h2>
-            <div id="map" class="plot-container">{{ map_html|safe }}</div>
+
+        <!-- Grid for side-by-side comparison -->
+        <div class="row">
+            <!-- File 1 Visualizations -->
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2>Network Coverage and Throughput - File 1</h2>
+                    <div id="map1" class="plot-container">{{ map_html1|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>Data Throughput Over Time - File 1</h2>
+                    <div id="throughput1" class="plot-container">{{ throughput_html1|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>RSRP Over Time - File 1</h2>
+                    <div id="rsrp1" class="plot-container">{{ rsrp_html1|safe }}</div>
+                </div>
+            </div>
+
+            <!-- File 2 Visualizations -->
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2>Network Coverage and Throughput - File 2</h2>
+                    <div id="map2" class="plot-container">{{ map_html2|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>Data Throughput Over Time - File 2</h2>
+                    <div id="throughput2" class="plot-container">{{ throughput_html2|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>RSRP Over Time - File 2</h2>
+                    <div id="rsrp2" class="plot-container">{{ rsrp_html2|safe }}</div>
+                </div>
+            </div>
         </div>
-        <div class="chart-container">
-            <h2>Data Throughput Over Time</h2>
-            <div id="throughput" class="plot-container">{{ throughput_html|safe }}</div>
-        </div>
-        <div class="chart-container">
-            <h2>RSRP Over Time</h2>
-            <div id="rsrp" class="plot-container">{{ rsrp_html|safe }}</div>
-        </div>
+
         <div class="footer">
             <p>&copy; 2024 Network Performance Dashboard. All rights reserved.</p>
         </div>

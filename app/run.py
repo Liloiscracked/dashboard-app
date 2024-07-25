@@ -1,116 +1,94 @@
 import sqlalchemy as sqlalchemy
 from flask import Flask, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
-import csv
+import pandas as pd
 import plotly.express as px
 import plotly.io as pio
-import pandas as pd
-app = Flask(__name__)
-app.permanent_session_lifetime = timedelta(days= 5) # can be minutes days, etc....
+import numpy as np
 
+app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # Needed for session management
+app.permanent_session_lifetime = timedelta(days=5)
 
 @app.route("/", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
-        session.permanent = True # to make the session permanent !!
+        session.permanent = True
         user = request.form["nm"]
         session["user"] = user
         flash("Login successful !!")
-        return redirect(url_for("user"))
+        return redirect(url_for("home"))
     else:
         if "user" in session:
             flash("Already logged in")
             return redirect(url_for("home"))
         return render_template("login.html")
 
-@app.route("/home")
+@app.route("/home", methods=["POST", "GET"])
 def home():
-    # Read the CSV file
-    df = pd.read_csv("clustered_network_data.csv")
-
-    # Data Cleaning
-    df = df.dropna(subset=['Data Throughput-RLC DL Throughput (kbps)', 'RSRP Legend'])
-    df['Data Throughput-RLC DL Throughput (kbps)'].fillna(0, inplace=True)
-    # Get selected cluster and date range from the form, if any
-    selected_cluster = request.args.get('cluster', '')
-    start_date = request.args.get('start_date', '')
-    end_date = request.args.get('end_date', '')
-
-    if selected_cluster:
-        df_filtered = df[df['Cluster'] == int(selected_cluster)]
-    else:
-        df_filtered = df
-
-    if start_date and end_date:
-        df_filtered = df_filtered[(df_filtered['Bin Time Stamp'] >= start_date) & (df_filtered['Bin Time Stamp'] <= end_date)]
-
-    # Sample a subset of the data for the map visualization
-    sample_size = min(1000, len(df_filtered))  # Ensure we do not sample more than available records
-    df_sample = df_filtered.sample(n=sample_size, random_state=42)
-
-    # Map Visualization
-    fig_map = px.scatter_mapbox(df_sample, lat="Latitude", lon="Longitude", color="RSRP Legend",
-                                size="Data Throughput-RLC DL Throughput (kbps)",
-                                color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10,
-                                mapbox_style="open-street-map",
-                                title="Network Coverage and Throughput")
-
-    fig_map.update_layout(
-        autosize=True,
-        margin=dict(l=0, r=0, t=40, b=0),  # Add some space around the plot
-        width=1200,
-        height=800
-    )
-
-    map_html = pio.to_html(fig_map, full_html=False)
-
-    # Line Chart for Throughput over Time
-    fig_throughput = px.line(df_filtered, x="Bin Time Stamp", y="Data Throughput-RLC DL Throughput (kbps)",
-                             title="Throughput Over Time", line_shape="linear", markers=True)
-
-    fig_throughput.update_layout(
-        autosize=True,
-        margin=dict(l=0, r=0, t=40, b=40),  # Add some space around the plot
-        width=1200,
-        height=400,
-        title="Data Throughput Over Time"
-    )
-
-    throughput_html = pio.to_html(fig_throughput, full_html=False)
-
-    # Line Chart for RSRP over Time
-    fig_rsrp = px.line(df_filtered, x="Bin Time Stamp", y="Serving RS Info-Serving RSRP (d Bm)",
-                       title="RSRP Over Time", line_shape="linear", markers=True)
-
-    fig_rsrp.update_layout(
-        autosize=True,
-        margin=dict(l=0, r=0, t=40, b=40),  # Add some space around the plot
-        width=1200,
-        height=400,
-        title="RSRP Over Time"
-    )
-
-    rsrp_html = pio.to_html(fig_rsrp, full_html=False)
-
-    # Get the unique clusters for the dropdown
-    clusters = df['Cluster'].unique()
-
-    return render_template('index.html', map_html=map_html, throughput_html=throughput_html, rsrp_html=rsrp_html, clusters=clusters, start_date=start_date, end_date=end_date)
-
-@app.route("/upload",  methods=["POST", "GET"])
-def upload():
     if request.method == "POST":
-        session.permanent = True # to make the session permanent !!
-        file = request.form["file"]
-        session["file"] = file
-        return redirect(url_for("show"))
-    else:
-        if "file" in session:
-            return redirect(url_for("show"))
-        return render_template("login.html")
+        file1 = request.files["file1"]
+        file2 = request.files["file2"]
 
-#@app.route("/visualize")
-#def show():
+        if file1 and file2:
+            df1 = pd.read_csv(file1)
+            df2 = pd.read_csv(file2)
+
+            # Data Cleaning for the first file
+            df1 = df1.dropna(subset=['Data Throughput-RLC DL Throughput (kbps)', 'RSRP Legend'])
+            df1['Data Throughput-RLC DL Throughput (kbps)'].fillna(0, inplace=True)
+
+            # Data Cleaning for the second file
+            df2 = df2.dropna(subset=['Data Throughput-RLC DL Throughput (kbps)', 'RSRP Legend'])
+            df2['Data Throughput-RLC DL Throughput (kbps)'].fillna(0, inplace=True)
+
+            # Combine data from both files
+            df_combined = pd.concat([df1, df2], ignore_index=True)
+
+            # Visualization for File 1
+            fig_map1 = px.scatter_mapbox(df1, lat="Latitude", lon="Longitude", color="RSRP Legend",
+                                        size="Data Throughput-RLC DL Throughput (kbps)",
+                                        color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10,
+                                        mapbox_style="open-street-map",
+                                        title="Network Coverage and Throughput - File 1")
+            fig_map1.update_layout(autosize=True, margin=dict(l=0, r=0, t=40, b=0), width=1200, height=800)
+            map_html1 = pio.to_html(fig_map1, full_html=False)
+
+            fig_throughput1 = px.line(df1, x="Bin Time Stamp", y="Data Throughput-RLC DL Throughput (kbps)",
+                                     title="Throughput Over Time - File 1", line_shape="linear", markers=True)
+            fig_throughput1.update_layout(autosize=True, margin=dict(l=0, r=0, t=40, b=40), width=1200, height=400)
+            throughput_html1 = pio.to_html(fig_throughput1, full_html=False)
+
+            fig_rsrp1 = px.line(df1, x="Bin Time Stamp", y="Serving RS Info-Serving RSRP (d Bm)",
+                               title="RSRP Over Time - File 1", line_shape="linear", markers=True)
+            fig_rsrp1.update_layout(autosize=True, margin=dict(l=0, r=0, t=40, b=40), width=1200, height=400)
+            rsrp_html1 = pio.to_html(fig_rsrp1, full_html=False)
+
+            # Visualization for File 2
+            fig_map2 = px.scatter_mapbox(df2, lat="Latitude", lon="Longitude", color="RSRP Legend",
+                                        size="Data Throughput-RLC DL Throughput (kbps)",
+                                        color_continuous_scale=px.colors.cyclical.IceFire, size_max=15, zoom=10,
+                                        mapbox_style="open-street-map",
+                                        title="Network Coverage and Throughput - File 2")
+            fig_map2.update_layout(autosize=True, margin=dict(l=0, r=0, t=40, b=0), width=1200, height=800)
+            map_html2 = pio.to_html(fig_map2, full_html=False)
+
+            fig_throughput2 = px.line(df2, x="Bin Time Stamp", y="Data Throughput-RLC DL Throughput (kbps)",
+                                     title="Throughput Over Time - File 2", line_shape="linear", markers=True)
+            fig_throughput2.update_layout(autosize=True, margin=dict(l=0, r=0, t=40, b=40), width=1200, height=400)
+            throughput_html2 = pio.to_html(fig_throughput2, full_html=False)
+
+            fig_rsrp2 = px.line(df2, x="Bin Time Stamp", y="Serving RS Info-Serving RSRP (d Bm)",
+                               title="RSRP Over Time - File 2", line_shape="linear", markers=True)
+            fig_rsrp2.update_layout(autosize=True, margin=dict(l=0, r=0, t=40, b=40), width=1200, height=400)
+            rsrp_html2 = pio.to_html(fig_rsrp2, full_html=False)
+
+            # Render the template with the visualizations
+            return render_template('index.html',
+                                   map_html1=map_html1, throughput_html1=throughput_html1, rsrp_html1=rsrp_html1,
+                                   map_html2=map_html2, throughput_html2=throughput_html2, rsrp_html2=rsrp_html2)
+    else:
+        return render_template("upload.html")
 
 if __name__ == "__main__":
     app.run(debug=True)
