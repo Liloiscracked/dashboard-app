@@ -5,6 +5,8 @@ import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 import numpy as np
+import plotly.graph_objects as go
+import folium
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey'  # Needed for session management
@@ -103,6 +105,104 @@ def home():
                                    map_html2=map_html2, throughput_html2=throughput_html2, rsrp_html2=rsrp_html2)
     else:
         return render_template("upload.html")
+@app.route("/2g",methods = ["POST","GET"])
+def two_g():
+    if request.method == 'POST':
+        file1 = request.files['file1']
+        file2 = request.files['file2']
+
+        df1 = pd.read_csv(file1)
+        df2 = pd.read_csv(file2)
+
+        polqa_html1 = generate_polqa_bar_chart(df1)
+        polqa_html2 = generate_polqa_bar_chart(df2)
+
+        rx_qual_html1 = generate_rx_qual_bar_chart(df1)
+        rx_qual_html2 = generate_rx_qual_bar_chart(df2)
+
+        gsm_power_html1 = generate_gsm_power_bar_chart(df1)
+        gsm_power_html2 = generate_gsm_power_bar_chart(df2)
+
+        def get_polqa_color(value):
+            if value >= 4:
+                return 'darkgreen'
+            elif value >= 3:
+                return 'lightgreen'
+            elif value >= 2:
+                return 'yellow'
+            elif value >= 1:
+                return 'orange'
+            else:
+                return 'red'
+
+        def get_rx_qual_color(value):
+            if value <= 3:
+                return 'darkgreen'
+            elif value <= 5:
+                return 'yellow'
+            elif value <= 7:
+                return 'red'
+            else:
+                return 'black'
+
+        def get_gsm_power_color(value):
+            if value >= -65:
+                return 'darkgreen'
+            elif value >= -75:
+                return 'lightgreen'
+            elif value >= -85:
+                return 'yellow'
+            elif value >= -95:
+                return 'orange'
+            elif value >= -110:
+                return 'red'
+            else:
+                return 'black'
+
+        map_html1 = generate_folium_map(df1, 'Audio  Quality.POLQA Downlink MOS-POLQA NB', get_polqa_color)
+        map_html2 = generate_folium_map(df2, 'Audio  Quality.POLQA Downlink MOS-POLQA NB', get_polqa_color)
+
+        rx_qual_map_html1 = generate_folium_map(df1, 'GSM Rx Qual-GSM Serving Cell Rx Qual Sub', get_rx_qual_color)
+        rx_qual_map_html2 = generate_folium_map(df2, 'GSM Rx Qual-GSM Serving Cell Rx Qual Sub', get_rx_qual_color)
+
+        gsm_power_map_html1 = generate_folium_map(df1, 'GSM Power-GSM Serving Cell Rx Level Sub', get_gsm_power_color)
+        gsm_power_map_html2 = generate_folium_map(df2, 'GSM Power-GSM Serving Cell Rx Level Sub', get_gsm_power_color)
+
+        polqa_stats1 = calculate_statistics(df1, 'Audio  Quality.POLQA Downlink MOS-POLQA NB')
+        polqa_stats2 = calculate_statistics(df2, 'Audio  Quality.POLQA Downlink MOS-POLQA NB')
+
+        rx_qual_stats1 = calculate_statistics(df1, 'GSM Rx Qual-GSM Serving Cell Rx Qual Sub')
+        rx_qual_stats2 = calculate_statistics(df2, 'GSM Rx Qual-GSM Serving Cell Rx Qual Sub')
+
+        gsm_power_stats1 = calculate_statistics(df1, 'GSM Power-GSM Serving Cell Rx Level Sub')
+        gsm_power_stats2 = calculate_statistics(df2, 'GSM Power-GSM Serving Cell Rx Level Sub')
+
+        return render_template('2g.html',
+                               polqa_html1=polqa_html1,
+                               polqa_html2=polqa_html2,
+                               map_html1=map_html1,
+                               map_html2=map_html2,
+                               rx_qual_html1=rx_qual_html1,
+                               rx_qual_html2=rx_qual_html2,
+                               rx_qual_map_html1=rx_qual_map_html1,
+                               rx_qual_map_html2=rx_qual_map_html2,
+                               gsm_power_html1=gsm_power_html1,
+                               gsm_power_html2=gsm_power_html2,
+                               gsm_power_map_html1=gsm_power_map_html1,
+                               gsm_power_map_html2=gsm_power_map_html2,
+                               polqa_stats1=polqa_stats1,
+                               polqa_stats2=polqa_stats2,
+                               rx_qual_stats1=rx_qual_stats1,
+                               rx_qual_stats2=rx_qual_stats2,
+                               gsm_power_stats1=gsm_power_stats1,
+                               gsm_power_stats2=gsm_power_stats2)
+
+    return render_template('2g.html', polqa_html1='', polqa_html2='', map_html1='', map_html2='',
+                           rx_qual_html1='', rx_qual_html2='', rx_qual_map_html1='', rx_qual_map_html2='',
+                           gsm_power_html1='', gsm_power_html2='', gsm_power_map_html1='', gsm_power_map_html2='',
+                           polqa_stats1={}, polqa_stats2={}, rx_qual_stats1={}, rx_qual_stats2={},
+                           gsm_power_stats1={}, gsm_power_stats2={})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
