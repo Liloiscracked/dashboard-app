@@ -145,9 +145,10 @@
                 </div>
                 <div class="stats-container">
                     <h2>RSRP Statistics - File 1</h2>
-                    <p>Mean: {{ rsrp_stats1.mean }}</p>
-                    <p>Max: {{ rsrp_stats1.max }}</p>
-                    <p>Standard Deviation: {{ rsrp_stats1.std }}</p>
+                    <p>Min: {{rsrp_stats1[0]}}</p>
+                    <p>Max: {{ rsrp_stats1[1] }}</p>
+                    <p>Mean: {{ rsrp_stats1[2] }}</p>
+                    <p>Standard Deviation: {{ rsrp_stats1[3] }}</p>
                 </div>
                 <div class="chart-container">
                     <h2>RSRP Map - File 1</h2>
@@ -195,9 +196,10 @@
                 </div>
                 <div class="stats-container">
                     <h2>RSRP Statistics - File 2</h2>
-                    <p>Mean: {{ rsrp_stats2.mean }}</p>
-                    <p>Max: {{ rsrp_stats2.max }}</p>
-                    <p>Standard Deviation: {{ rsrp_stats2.std }}</p>
+                    <p>Min: {{rsrp_stats2[0]}}</p>
+                    <p>Max: {{ rsrp_stats2[1] }}</p>
+                    <p>Mean: {{ rsrp_stats2[2] }}</p>
+                    <p>Standard Deviation: {{ rsrp_stats2[3] }}</p>
                 </div>
                 <div class="chart-container">
                     <h2>RSRP Map - File 2</h2>

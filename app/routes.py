@@ -121,6 +121,7 @@ def four_g():
 
         return render_template('4g.html',
                                rsrp_html1=rsrp_html1,
+                               rsrp_stats1=processor1.stats('Serving RS Info-Serving RSRP (d Bm)'),
                                cinr_html1=cinr_html1,
                                rsrq_html1=rsrq_html1,
                                polqa_html1=polqa_html1,
@@ -131,6 +132,7 @@ def four_g():
                                earfcn_pie_html1=earfcn_pie_html1,
                                earfcn_map_html1=earfcn_map_html1,
                                rsrp_html2=rsrp_html2,
+                               rsrp_stats2=processor2.stats('Serving RS Info-Serving RSRP (d Bm)'),
                                cinr_html2=cinr_html2,
                                rsrq_html2=rsrq_html2,
                                polqa_html2=polqa_html2,
@@ -140,4 +142,4 @@ def four_g():
                                polqa_map_html2=polqa_map_html2,
                                earfcn_pie_html2=earfcn_pie_html2,
                                earfcn_map_html2=earfcn_map_html2)
-    return render_template('4g.html', rsrp_stats1={}, rsrp_stats2={})
+    return render_template('4g.html',rsrp_stats1 ={},rsrp_stats2 = {})

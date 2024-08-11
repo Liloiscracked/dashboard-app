@@ -4,26 +4,29 @@ import plotly.graph_objects as go
 import folium
 import plotly.io as pio
 
+
 class DataProcessor_4g:
     def __init__(self, file):
-        # Read the CSV file directly from the file-like object
-        self.df = pd.read_csv(file)
+        self.df = pd.read_csv(file, nrows=300)
         self.process_data()
         self.generate_visualizations()
 
     def process_data(self):
-        self.df.dropna(subset=['Serving RS Info-Serving RSRP (d Bm)'], inplace=True)
+        self.df.dropna(subset=['Serving RS Info-Serving RSRP (d Bm)', 'Serving RS Info-Serving RSRQ (d B)',
+                               'Serving Channel Info-DL EARFCN', 'Serving RS Info-Serving RS CINR (d B)',
+                               'Audio Quality.POLQA Downlink MOS-POLQA SWB', ], inplace=True)
+
+    def stats(self, feature):
+        return [self.df[feature].min(), self.df[feature].max(), self.df[feature].mean(), self.df[feature].std()]
 
     def generate_bar_chart(self, df, column, bins, labels, colors):
         if len(bins) != len(labels) + 1:
             raise ValueError("Bins must be one more than the number of labels")
 
         dic = {label: 0 for label in labels}
-        length = df.shape[0]
+        length = len(df)
 
         for val in df[column]:
-            if val < bins[0]:
-                continue
             for i in range(1, len(bins)):
                 if bins[i - 1] <= val < bins[i]:
                     dic[labels[i - 1]] += 1
@@ -32,20 +35,26 @@ class DataProcessor_4g:
                 if val >= bins[-1]:
                     dic[labels[-1]] += 1
 
-        for key in dic:
-            dic[key] = round(dic[key] / length * 100, 2)
+        dic = {k: round(v / length * 100, 2) for k, v in dic.items()}
 
-        fig = px.bar(
-            x=list(dic.keys()),
-            y=list(dic.values()),
-            color=list(dic.keys()),
-            color_discrete_sequence=colors
-        )
+        fig = go.Figure()
+
+        for i, (label, color) in enumerate(zip(dic.keys(), colors)):
+            fig.add_trace(
+                go.Bar(
+                    x=[label],
+                    y=[dic[label]],
+                    name=label,
+                    marker_color=color
+                )
+            )
+
         fig.update_layout(
             title=f'{column} Distribution',
             xaxis_title='Range',
             yaxis_title='Percentage (%)',
-            plot_bgcolor='rgba(0,0,0,0)'
+            plot_bgcolor='rgba(0,0,0,0)',
+            showlegend=False
         )
 
         return pio.to_html(fig, full_html=False)
@@ -73,27 +82,26 @@ class DataProcessor_4g:
         return pio.to_html(fig, full_html=False)
 
     def generate_visualizations(self):
-        # Generate and store visualizations as HTML strings
         self.rsrp_html = self.generate_bar_chart(
             self.df,
             'Serving RS Info-Serving RSRP (d Bm)',
             [-120, -105, -95, -85, -75, float('inf')],
-            ["-120 to -105", "-105 to -95", "-95 to -85", "-85 to -75", "-75 to Max"],
-            ['black', 'red', 'orange', 'yellow', 'lightgreen']
+            ["-120 to -105", "-105 to -95", "-95 to -85", "-85 to -75", "-75 and above"],
+            ['black', 'red', 'orange', 'yellow', 'lightgreen', 'darkgreen']
         )
         self.cinr_html = self.generate_bar_chart(
             self.df,
             'Serving RS Info-Serving RS CINR (d B)',
             [-10, 0, 5, 10, float('inf')],
-            ["-10 to 0", "0 to 5", "5 to 10", "10 to Max"],
+            ["-10 to 0", "0 to 5", "5 to 10", "10 and above"],
             ['red', 'orange', 'yellow', 'lightgreen', 'darkgreen']
         )
         self.rsrq_html = self.generate_bar_chart(
             self.df,
             'Serving RS Info-Serving RSRQ (d B)',
             [-18, -14, -12, -10, -6, float('inf')],
-            ["-18 to -14", "-14 to -12", "-12 to -10", "-10 to -6", "-6 to Max"],
-            ['black', 'red', 'orange', 'yellow', 'lightgreen']
+            ["-18 to -14", "-14 to -12", "-12 to -10", "-10 to -6", "-6 and above"],
+            ['black', 'red', 'orange', 'yellow', 'lightgreen', 'darkgreen']
         )
         self.polqa_html = self.generate_bar_chart(
             self.df,
