@@ -4,6 +4,7 @@ from two_g_data import DataProcessor_2g
 from run import app, get_db_connection
 from werkzeug.security import check_password_hash
 from four_g_data import DataProcessor_4g
+from five_g_data import DataProcessor_5g
 @app.route("/", methods=["GET"])
 def index():
     if "user" in session:
@@ -143,3 +144,52 @@ def four_g():
                                earfcn_pie_html2=earfcn_pie_html2,
                                earfcn_map_html2=earfcn_map_html2)
     return render_template('4g.html',rsrp_stats1 ={},rsrp_stats2 = {})
+
+
+@app.route('/5g', methods=['GET', 'POST'])
+def five_g():
+    if request.method == 'POST':
+        # Get uploaded files
+        file1 = request.files.get('file1')
+        file2 = request.files.get('file2')
+
+        if not file1 or not file2:
+            return "Both files are required!", 400
+
+        # Create DataProcessor_4g instances for each file
+        processor1 = DataProcessor_5g(file1)
+        processor2 = DataProcessor_5g(file2)
+
+        # Generate visualizations for File 1
+        rsrp_html1 = processor1.rsrp_html
+        cinr_html1 = processor1.cinr_html
+        dl_html1 = processor1.dl_html
+        rsrp_map_html1 = processor1.rsrp_map_html
+        cinr_map_html1 = processor1.cinr_map_html
+        dl_map_html1 = processor1.dl_map_html
+
+        # Generate visualizations for File 2
+        rsrp_html2 = processor2.rsrp_html
+        cinr_html2 = processor2.cinr_html
+        dl_html2 = processor2.dl_html
+        rsrp_map_html2 = processor2.rsrp_map_html
+        cinr_map_html2 = processor2.cinr_map_html
+        dl_map_html2 = processor2.dl_map_html
+
+        return render_template('5g.html',
+                               rsrp_html1=rsrp_html1,
+                               rsrp_stats1=processor1.stats('Serving RS Info-Serving RSRP (d Bm)'),
+                               cinr_html1=cinr_html1,
+                               dl_html1=dl_html1,
+                               rsrp_map_html1=rsrp_map_html1,
+                               cinr_map_html1=cinr_map_html1,
+                               dl_map_html1=dl_map_html1,
+                               rsrp_html2=rsrp_html2,
+                               rsrp_stats2=processor2.stats('Serving RS Info-Serving RSRP (d Bm)'),
+                               cinr_html2=cinr_html2,
+                               dl_html2=dl_html2,
+                               rsrp_map_html2=rsrp_map_html2,
+                               cinr_map_html2=cinr_map_html2,
+                               rsrq_map_html2=dl_map_html2,)
+    return render_template('5g.html',rsrp_stats1 ={},rsrp_stats2 = {})
+

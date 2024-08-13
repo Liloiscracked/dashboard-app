@@ -1,10 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>4G Data Analysis Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            color: #007bff;
+            margin-bottom: 0;
+        }
+        .header p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+        .filter {
+            margin-bottom: 30px;
+        }
+        .chart-container, .stats-container {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+        .chart-container {
+            height: 500px;
+        }
+        .chart-container h2, .stats-container h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background: #007bff;
+            color: #fff;
+            border-radius: 0 0 8px 8px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin-top: 10px;
+                padding: 15px;
+            }
+        }
+        .plot-container {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+        }
+        .plot-container .plotly-graph-div {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+        }
+        .visualization-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .visualization-column {
+            flex: 1 1 calc(50% - 20px);
+            min-width: 0;
+            max-width: calc(50% - 20px);
+            overflow: hidden;
+        }
+    </style>
 </head>
 <body>
-$END$
+    <div class="container">
+        <div class="header">
+            <h1>5G Data Analysis Dashboard</h1>
+            <p>Visualize signal strength, quality, and performance metrics for two files.</p>
+        </div>
+        <!-- File Upload Form -->
+        <div class="filter">
+            <form method="POST" action="{{ url_for('five_g') }}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file1">Upload File 1:</label>
+                    <input type="file" id="file1" name="file1" class="form-control" accept=".csv" required>
+                </div>
+                <div class="form-group">
+                    <label for="file2">Upload File 2:</label>
+                    <input type="file" id="file2" name="file2" class="form-control" accept=".csv" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Upload and Analyze</button>
+            </form>
+        </div>
+
+        <div class="visualization-row">
+            <!-- Visualizations for File 1 -->
+            <div class="visualization-column">
+                <div class="chart-container">
+                    <h2>RSRP Distribution - File 1</h2>
+                    <div class="plot-container">{{ rsrp_html1|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>CINR Distribution - File 1</h2>
+                    <div class="plot-container">{{ cinr_html1|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>DL Distribution - File 1</h2>
+                    <div class="plot-container">{{ dl_html1|safe }}</div>
+                </div>
+                <div class="stats-container">
+                    <h2>RSRP Statistics - File 1</h2>
+                    <p>Min: {{rsrp_stats1[0]}}</p>
+                    <p>Max: {{ rsrp_stats1[1] }}</p>
+                    <p>Mean: {{ rsrp_stats1[2] }}</p>
+                    <p>Standard Deviation: {{ rsrp_stats1[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>RSRP Map - File 1</h2>
+                    <div class="plot-container">{{ rsrp_map_html1|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>CINR Map - File 1</h2>
+                    <div class="plot-container">{{ cinr_map_html1|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>DL Map - File 1</h2>
+                    <div class="plot-container">{{ dl_map_html1|safe }}</div>
+                </div>
+            </div>
+
+            <!-- Visualizations for File 2 -->
+            <div class="visualization-column">
+                <div class="chart-container">
+                    <h2>RSRP Distribution - File 2</h2>
+                    <div class="plot-container">{{ rsrp_html2|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>CINR Distribution - File 2</h2>
+                    <div class="plot-container">{{ cinr_html2|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>DL Distribution - File 2</h2>
+                    <div class="plot-container">{{ dl_html2|safe }}</div>
+                </div>
+                <div class="stats-container">
+                    <h2>RSRP Statistics - File 2</h2>
+                    <p>Min: {{rsrp_stats2[0]}}</p>
+                    <p>Max: {{ rsrp_stats2[1] }}</p>
+                    <p>Mean: {{ rsrp_stats2[2] }}</p>
+                    <p>Standard Deviation: {{ rsrp_stats2[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>RSRP Map - File 2</h2>
+                    <div class="plot-container">{{ rsrp_map_html2|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>CINR Map - File 2</h2>
+                    <div class="plot-container">{{ cinr_map_html2|safe }}</div>
+                </div>
+                <div class="chart-container">
+                    <h2>DL Map - File 2</h2>
+                    <div class="plot-container">{{dl_map_html2|safe }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 5G Data Analysis Dashboard</p>
+        </div>
+    </div>
 </body>
 </html>
