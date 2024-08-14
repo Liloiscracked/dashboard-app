@@ -1,159 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Network Performance Dashboard</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <title>Welcome to Network Analyzer</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+        body, html {
+            height: 100%;
             margin: 0;
-            padding: 0;
+            font-family: Arial, sans-serif;
+            background: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
         .container {
-            display: flex;
-            flex-direction: column;
-            gap: 20px; /* Space between sections */
-            margin-top: 20px;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .header {
             text-align: center;
         }
-        .header h1 {
-            font-size: 2.5rem;
-            color: #007bff;
-            margin-bottom: 0;
+
+        .btn-group-vertical {
+            margin-top: 30px;
         }
-        .header p {
-            font-size: 1.1rem;
-            color: #555;
-        }
-        .filter {
-            margin-bottom: 30px;
-        }
-        .chart-container {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            margin-bottom: 20px; /* Space between charts */
-            overflow: hidden; /* Hide any excess content */
-            height: 500px; /* Set a fixed height for the container */
-            position: relative;
-        }
-        .chart-container h2 {
+
+        .btn-custom {
             font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        .footer {
-            text-align: center;
-            padding: 10px;
-            background: #007bff;
-            color: #fff;
-            border-radius: 0 0 8px 8px;
-        }
-        @media (max-width: 768px) {
-            .container {
-                margin-top: 10px;
-                padding: 15px;
-            }
-        }
-        .plot-container {
-            width: 100%; /* Ensures plot takes full width of container */
-            height: 100%; /* Ensures plot takes full height of container */
-            overflow: auto; /* Enable scrolling */
-        }
-        .plot-container .plotly-graph-div {
-            width: 100% !important; /* Ensures Plotly graph takes full width */
-            height: 100% !important; /* Ensures Plotly graph takes full height */
-            max-width: 100%;
-            max-height: 100%;
-            overflow: hidden; /* Hide overflow inside plotly graph */
-        }
-        /* Flexbox styles for visualization layout */
-        .visualization-row {
-            display: flex;
-            justify-content: space-between; /* Push columns to the edges */
-            gap: 20px; /* Space between columns */
-        }
-        .visualization-column {
-            flex: 1;
-            min-width: 0; /* Allows flex items to shrink below their content size */
-            max-width: calc(50% - 10px); /* Adjusts the width to account for gaps */
-            overflow: hidden; /* Hide any overflow */
+            padding: 15px 25px;
+            margin: 10px;
+            width: 100%;
+            max-width: 300px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <div class="header">
-            <h1>Network Performance Dashboard</h1>
-            <p>Visualize network coverage, throughput, and signal strength trends for two files.</p>
-        </div>
-        <div class="filter">
-            <form method="POST" action="{{ url_for('home') }}" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="file1">Select the first CSV file:</label>
-                    <input type="file" id="file1" name="file1" class="form-control" accept=".csv" required>
-                </div>
-                <div class="form-group">
-                    <label for="file2">Select the second CSV file:</label>
-                    <input type="file" id="file2" name="file2" class="form-control" accept=".csv" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Upload and Compare</button>
-            </form>
-        </div>
-
-        <!-- Flexbox Container for Side-by-Side Visualizations -->
-        <div class="visualization-row">
-            <!-- File 1 Visualizations -->
-            <div class="visualization-column">
-                <div class="chart-container">
-                    <h2>Network Coverage and Throughput - File 1</h2>
-                    <div id="map1" class="plot-container">{{ map_html1|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>Data Throughput Over Time - File 1</h2>
-                    <div id="throughput1" class="plot-container">{{ throughput_html1|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>RSRP Over Time - File 1</h2>
-                    <div id="rsrp1" class="plot-container">{{ rsrp_html1|safe }}</div>
-                </div>
-            </div>
-
-            <!-- File 2 Visualizations -->
-            <div class="visualization-column">
-                <div class="chart-container">
-                    <h2>Network Coverage and Throughput - File 2</h2>
-                    <div id="map2" class="plot-container">{{ map_html2|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>Data Throughput Over Time - File 2</h2>
-                    <div id="throughput2" class="plot-container">{{ throughput_html2|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>RSRP Over Time - File 2</h2>
-                    <div id="rsrp2" class="plot-container">{{ rsrp_html2|safe }}</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="footer">
-            <p>&copy; 2024 Network Performance Dashboard. All rights reserved.</p>
+        <h1 class="display-4">Welcome to Network Analyzer</h1>
+        <p class="lead">Select the network type to analyze:</p>
+        <div class="btn-group-vertical">
+            <a href="/2g" class="btn btn-primary btn-custom">2G</a>
+            <a href="/4g" class="btn btn-success btn-custom">4G</a>
+            <a href="/5g" class="btn btn-info btn-custom">5G</a>
         </div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

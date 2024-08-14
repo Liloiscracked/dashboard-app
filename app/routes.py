@@ -1,4 +1,3 @@
-import pandas as pd
 from flask import render_template, request, redirect, url_for, session, flash
 from two_g_data import DataProcessor_2g
 from run import app, get_db_connection
@@ -9,7 +8,7 @@ from five_g_data import DataProcessor_5g
 def index():
     if "user" in session:
         return redirect(url_for("home"))
-    return render_template("login.html")
+    return render_template("index.html")
 
 @app.route("/login", methods=["POST"])
 def login():
