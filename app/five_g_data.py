@@ -7,7 +7,7 @@ import plotly.io as pio
 
 class DataProcessor_5g:
     def __init__(self, file):
-        self.df = pd.read_csv(file, nrows=300)#for testing
+        self.df = pd.read_csv(file)
         self.process_data()
         self.generate_visualizations()
 

@@ -180,16 +180,21 @@ def five_g():
                                rsrp_html1=rsrp_html1,
                                rsrp_stats1=processor1.stats('Serving RS Info-Serving RSRP (d Bm)'),
                                cinr_html1=cinr_html1,
+                               cinr_stats1=processor1.stats('Serving RS Info-NR Best SS-SINR'),
                                dl_html1=dl_html1,
+                               dl_stats1=processor1.stats('Data Throughput-NR PDCP downlink throughput (Mbps)'),
                                rsrp_map_html1=rsrp_map_html1,
                                cinr_map_html1=cinr_map_html1,
                                dl_map_html1=dl_map_html1,
                                rsrp_html2=rsrp_html2,
                                rsrp_stats2=processor2.stats('Serving RS Info-Serving RSRP (d Bm)'),
                                cinr_html2=cinr_html2,
+                               cinr_stats2=processor2.stats('Serving RS Info-NR Best SS-SINR'),
                                dl_html2=dl_html2,
+                               dl_map_html2= dl_map_html2,
+                               dl_stats2=processor2.stats('Data Throughput-NR PDCP downlink throughput (Mbps)'),
                                rsrp_map_html2=rsrp_map_html2,
                                cinr_map_html2=cinr_map_html2,
                                rsrq_map_html2=dl_map_html2,)
-    return render_template('5g.html',rsrp_stats1 ={},rsrp_stats2 = {})
+    return render_template('5g.html',rsrp_stats1 ={},rsrp_stats2 = {}, cinr_stats1 = {}, cinr_stats2 = {},dl_stats1 = {},dl_stats2 = {},)
 
