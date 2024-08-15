@@ -6,8 +6,6 @@ from four_g_data import DataProcessor_4g
 from five_g_data import DataProcessor_5g
 @app.route("/", methods=["GET"])
 def index():
-    if "user" in session:
-        return redirect(url_for("home"))
     return render_template("index.html")
 
 @app.route("/login", methods=["POST"])
@@ -122,6 +120,9 @@ def four_g():
         return render_template('4g.html',
                                rsrp_html1=rsrp_html1,
                                rsrp_stats1=processor1.stats('Serving RS Info-Serving RSRP (d Bm)'),
+                               rsrq_stats1=processor1.stats('Serving RS Info-Serving RSRQ (d B)'),
+                               cinr_stats1 = processor1.stats( 'Serving RS Info-Serving RS CINR (d B)'),
+                               polqa_stats1=processor1.stats('Audio Quality.POLQA Downlink MOS-POLQA SWB'),
                                cinr_html1=cinr_html1,
                                rsrq_html1=rsrq_html1,
                                polqa_html1=polqa_html1,
@@ -133,6 +134,9 @@ def four_g():
                                earfcn_map_html1=earfcn_map_html1,
                                rsrp_html2=rsrp_html2,
                                rsrp_stats2=processor2.stats('Serving RS Info-Serving RSRP (d Bm)'),
+                               rsrq_stats2=processor2.stats('Serving RS Info-Serving RSRQ (d B)'),
+                               cinr_stats2=processor2.stats('Serving RS Info-Serving RS CINR (d B)'),
+                               polqa_stats2=processor2.stats('Audio Quality.POLQA Downlink MOS-POLQA SWB'),
                                cinr_html2=cinr_html2,
                                rsrq_html2=rsrq_html2,
                                polqa_html2=polqa_html2,
@@ -142,7 +146,8 @@ def four_g():
                                polqa_map_html2=polqa_map_html2,
                                earfcn_pie_html2=earfcn_pie_html2,
                                earfcn_map_html2=earfcn_map_html2)
-    return render_template('4g.html',rsrp_stats1 ={},rsrp_stats2 = {})
+    return render_template('4g.html',rsrp_stats1 ={},rsrq_stats1={},cinr_stats1={},polqa_stats1={},rsrp_stats2 = {}, rsrq_stats2={},cinr_stats2={},polqa_stats2={})
+
 
 
 @app.route('/5g', methods=['GET', 'POST'])

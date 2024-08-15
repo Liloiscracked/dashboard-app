@@ -128,20 +128,8 @@
                     <div class="plot-container">{{ rsrp_html1|safe }}</div>
                 </div>
                 <div class="chart-container">
-                    <h2>CINR Distribution - File 1</h2>
-                    <div class="plot-container">{{ cinr_html1|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>RSRQ Distribution - File 1</h2>
-                    <div class="plot-container">{{ rsrq_html1|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>POLQA Distribution - File 1</h2>
-                    <div class="plot-container">{{ polqa_html1|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>EARFCN Pie Chart - File 1</h2>
-                    <div class="plot-container">{{ earfcn_pie_html1|safe }}</div>
+                    <h2>RSRP Map - File 1</h2>
+                    <div class="plot-container">{{ rsrp_map_html1|safe }}</div>
                 </div>
                 <div class="stats-container">
                     <h2>RSRP Statistics - File 1</h2>
@@ -151,20 +139,53 @@
                     <p>Standard Deviation: {{ rsrp_stats1[3] }}</p>
                 </div>
                 <div class="chart-container">
-                    <h2>RSRP Map - File 1</h2>
-                    <div class="plot-container">{{ rsrp_map_html1|safe }}</div>
+                    <h2>CINR Distribution - File 1</h2>
+                    <div class="plot-container">{{ cinr_html1|safe }}</div>
                 </div>
                 <div class="chart-container">
                     <h2>CINR Map - File 1</h2>
                     <div class="plot-container">{{ cinr_map_html1|safe }}</div>
                 </div>
+                <div class="stats-container">
+                    <h2>CINR Statistics - File 1</h2>
+                    <p>Min: {{cinr_stats1[0]}}</p>
+                    <p>Max: {{ cinr_stats1[1] }}</p>
+                    <p>Mean: {{ cinr_stats1[2] }}</p>
+                    <p>Standard Deviation: {{ cinr_stats1[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>RSRQ Distribution - File 1</h2>
+                    <div class="plot-container">{{ rsrq_html1|safe }}</div>
+                </div>
                 <div class="chart-container">
                     <h2>RSRQ Map - File 1</h2>
                     <div class="plot-container">{{ rsrq_map_html1|safe }}</div>
                 </div>
+                <div class="stats-container">
+                    <h2>RSRQ Statistics - File 1</h2>
+                    <p>Min: {{rsrq_stats1[0]}}</p>
+                    <p>Max: {{ rsrq_stats1[1] }}</p>
+                    <p>Mean: {{ rsrq_stats1[2] }}</p>
+                    <p>Standard Deviation: {{ rsrq_stats1[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>POLQA Distribution - File 1</h2>
+                    <div class="plot-container">{{ polqa_html1|safe }}</div>
+                </div>
                 <div class="chart-container">
                     <h2>POLQA Map - File 1</h2>
                     <div class="plot-container">{{ polqa_map_html1|safe }}</div>
+                </div>
+                <div class="stats-container">
+                    <h2>POLQA Statistics - File 1</h2>
+                    <p>Min: {{polqa_stats1[0]}}</p>
+                    <p>Max: {{ polqa_stats1[1] }}</p>
+                    <p>Mean: {{ polqa_stats1[2] }}</p>
+                    <p>Standard Deviation: {{ polqa_stats1[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>EARFCN Pie Chart - File 1</h2>
+                    <div class="plot-container">{{ earfcn_pie_html1|safe }}</div>
                 </div>
                 <div class="chart-container">
                     <h2>EARFCN Map - File 1</h2>
@@ -179,20 +200,8 @@
                     <div class="plot-container">{{ rsrp_html2|safe }}</div>
                 </div>
                 <div class="chart-container">
-                    <h2>CINR Distribution - File 2</h2>
-                    <div class="plot-container">{{ cinr_html2|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>RSRQ Distribution - File 2</h2>
-                    <div class="plot-container">{{ rsrq_html2|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>POLQA Distribution - File 2</h2>
-                    <div class="plot-container">{{ polqa_html2|safe }}</div>
-                </div>
-                <div class="chart-container">
-                    <h2>EARFCN Pie Chart - File 2</h2>
-                    <div class="plot-container">{{ earfcn_pie_html2|safe }}</div>
+                    <h2>RSRP Map - File 2</h2>
+                    <div class="plot-container">{{ rsrp_map_html2|safe }}</div>
                 </div>
                 <div class="stats-container">
                     <h2>RSRP Statistics - File 2</h2>
@@ -202,20 +211,53 @@
                     <p>Standard Deviation: {{ rsrp_stats2[3] }}</p>
                 </div>
                 <div class="chart-container">
-                    <h2>RSRP Map - File 2</h2>
-                    <div class="plot-container">{{ rsrp_map_html2|safe }}</div>
+                    <h2>CINR Distribution - File 2</h2>
+                    <div class="plot-container">{{ cinr_html2|safe }}</div>
                 </div>
                 <div class="chart-container">
                     <h2>CINR Map - File 2</h2>
                     <div class="plot-container">{{ cinr_map_html2|safe }}</div>
                 </div>
+                <div class="stats-container">
+                    <h2>CINR Statistics - File 2</h2>
+                    <p>Min: {{cinr_stats2[0]}}</p>
+                    <p>Max: {{ cinr_stats2[1] }}</p>
+                    <p>Mean: {{ cinr_stats2[2] }}</p>
+                    <p>Standard Deviation: {{ cinr_stats2[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>RSRQ Distribution - File 2</h2>
+                    <div class="plot-container">{{ rsrq_html2|safe }}</div>
+                </div>
                 <div class="chart-container">
                     <h2>RSRQ Map - File 2</h2>
                     <div class="plot-container">{{ rsrq_map_html2|safe }}</div>
                 </div>
+                <div class="stats-container">
+                    <h2>RSRQ Statistics - File 2</h2>
+                    <p>Min: {{rsrq_stats2[0]}}</p>
+                    <p>Max: {{ rsrq_stats2[1] }}</p>
+                    <p>Mean: {{ rsrq_stats2[2] }}</p>
+                    <p>Standard Deviation: {{ rsrq_stats2[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>POLQA Distribution - File 2</h2>
+                    <div class="plot-container">{{ polqa_html2|safe }}</div>
+                </div>
                 <div class="chart-container">
                     <h2>POLQA Map - File 2</h2>
                     <div class="plot-container">{{ polqa_map_html2|safe }}</div>
+                </div>
+                <div class="stats-container">
+                    <h2>POLQA Statistics - File 2</h2>
+                    <p>Min: {{polqa_stats2[0]}}</p>
+                    <p>Max: {{ polqa_stats2[1] }}</p>
+                    <p>Mean: {{ polqa_stats2[2] }}</p>
+                    <p>Standard Deviation: {{ polqa_stats2[3] }}</p>
+                </div>
+                <div class="chart-container">
+                    <h2>EARFCN Pie Chart - File 2</h2>
+                    <div class="plot-container">{{ earfcn_pie_html2|safe }}</div>
                 </div>
                 <div class="chart-container">
                     <h2>EARFCN Map - File 2</h2>
